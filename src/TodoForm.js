@@ -1,53 +1,47 @@
 import React from 'react';
-import jQuery from 'jquery';
+import model from './Model'
 
 class TodoForm extends React.Component {
-  constructor() {
-    super();
-  }
+   constructor() {
+      super();
+   }
 
-  createTodo(event) {
-    event.preventDefault();
+   createTodo(event) {
+      event.preventDefault();
 
-    let component = this;
-    let title = this.refs.newTodoInput.value;
-    let newTodo = {
-      id: null,
-      title: title,
-      completed: false
-    };
+      let component = this;
+      let title = component.refs.newTodoInput.value;
 
-    jQuery.ajax({
-      type: "POST",
-      url: "https://afternoon-atoll-31464.herokuapp.com/todos.json",
-      data: JSON.stringify({
-          todo: newTodo
-      }),
-      contentType: "application/json",
-      dataType: "json"
-    })
-      .done(function(data) {
-        component.props.onChange();
-        component.refs.newTodoInput.value = "";
-      })
+      let newTodo = {
+         id: null,
+         title: title,
+         completed: false
+      };
 
-      .fail(function(error) {
-        console.log(error);
-      });
-  }
+      function onDone(data) {
+         component.props.onChange();
+         component.refs.newTodoInput.value = "";
+      }
 
-  render() {
-    return (
-      <form onSubmit={this.createTodo.bind(this)}>
-        <div className="form-group col-xs-10">
-          <input type="text" className="form-control" ref="newTodoInput" placeholder="What needs to be done?" />
-        </div>
-        <div className="form-group col-xs-2">
-          <button type="submit" className="btn btn-primary">Save</button>
-        </div>
-      </form>
-    );
-  }
+      function onFail(error) {
+         console.log(error);
+      }
+
+      model.todos.create( newTodo, onDone, onFail );
+   }
+
+   render() {
+      return (
+         <form onSubmit={this.createTodo.bind(this)}>
+            <div className="form-group col-xs-10">
+               <input type="text" className="form-control" ref="newTodoInput" placeholder="What needs to be done?"/>
+            </div>
+            <div className="form-group col-xs-2">
+               <button type="submit" className="btn btn-primary">Save</button>
+            </div>
+         </form>
+      );
+   }
 }
 
 export default TodoForm;

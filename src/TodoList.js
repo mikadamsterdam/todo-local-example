@@ -2,46 +2,50 @@ import React from 'react';
 import jQuery from 'jquery';
 import TodoForm from './TodoForm';
 import TodoItem from './TodoItem';
+import model from './Model'
 
 class TodoList extends React.Component {
-  constructor() {
-    super();
+   constructor() {
+      super();
 
-    this.state = {
-      todos: []
-    };
-  }
+      this.state = {
+         todos: []
+      };
+   }
 
-  reloadTodos(event) {
-    let component = this;
+   reloadTodos(event) {
+      let component = this;
 
-    jQuery.getJSON("https://afternoon-atoll-31464.herokuapp.com/todos", function(data) {
-      console.log(data);
+      function onDone(data) {
+         console.log("Reload Todos done: " + data);
 
-      component.setState({
-        todos: data.todos
-      });
-    });
-  }
+         component.setState({
+            todos: data.todos
+            //todos: []
+         });
+      }
 
-  componentDidMount() {
-    this.reloadTodos();
-  }
+      model.todos.index( onDone );
+   }
 
-  render() {
-    return (
-      <div className="todo-list">
-        <TodoForm onChange={this.reloadTodos.bind(this)} />
-        <ul>
-          {this.state.todos.map(function(todo, i) {
-            return(
-              <TodoItem key={todo.id} id={todo.id} title={todo.title} completed={todo.completed} createdAt={todo.created_at} updatedAt={todo.updated_at} />
-            );
-          })}
-        </ul>
-      </div>
-    );
-  }
+   componentDidMount() {
+      this.reloadTodos();
+   }
+
+   render() {
+      return (
+         <div className="todo-list">
+            <TodoForm onChange={this.reloadTodos.bind(this)}/>
+            <ul>
+               {this.state.todos.map(function (todo, i) {
+                  return (
+                     <TodoItem key={todo.id} id={todo.id} title={todo.title} completed={todo.completed}/>
+                  );
+               })}
+            </ul>
+         </div>
+      );
+   }
 }
 
 export default TodoList;
