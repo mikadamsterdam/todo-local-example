@@ -17,7 +17,7 @@ class TodoList extends React.Component {
       let component = this;
 
       function onDone(data) {
-         console.log("Reload Todos done: " + data);
+         console.log( "Reload Todos done: " + JSON.stringify( data ) );
 
          component.setState({
             todos: data.todos

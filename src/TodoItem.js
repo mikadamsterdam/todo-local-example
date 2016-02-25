@@ -53,7 +53,7 @@ class TodoItem extends React.Component {
 
       this.setState( newState );
 
-      console.log( newState );
+      console.log( "New state: " + JSON.stringify( newState ) );
 
       // Update Server ------------------------------------------
 

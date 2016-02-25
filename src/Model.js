@@ -6,14 +6,17 @@ class TodosLocal
       this.todos = [];
    }
 
-   create( todo, onSuccess, onFail )
+   create( todo, onDone, onFail )
    {
       console.log( "TodosLocal.create: " + JSON.stringify( todo ) );
 
       var id = this.todos.length;
 
-      this.todos.push( jQuery.extend( todo, { id: id } ) );
-      onSuccess({});
+      todo = jQuery.extend( todo, { id: id } );
+
+      this.todos.push( todo );
+
+      onDone( { todo: todo } );
    }
 
    update( id, attributes, onDone, onFail, onAlways )
@@ -22,7 +25,9 @@ class TodosLocal
 
       jQuery.extend( this.todos[id], attributes );
 
-      onDone( { todo: this.todos[id] } );
+      var response = { todo: this.todos[id] };
+
+      onDone( response );
       onAlways();
    }
 
@@ -40,36 +45,39 @@ class TodosRemote
 {
    constructor()
    {
+      // Use Wouter's server.  Hard code to project 2, since he added projects while I was working on this.  But should improve to
+      // also understand Projects properly.
+      this.server = "https://afternoon-atoll-31464.herokuapp.com/projects/2";
    }
 
-   create( todo, onSuccess, onFail )
+   create( todo, onDone, onFail )
    {
       var data = JSON.stringify({ todo: todo });
 
       console.log( "post /todos: " + data );
 
-      var request = {
+      let request = {
          type: "POST",
-         url: "https://afternoon-atoll-31464.herokuapp.com/todos.json",
+         url: this.server + "/todos.json",
          data: data,
          contentType: "application/json",
          dataType: "json"
       };
 
-      jQuery.ajax( request ).done( onSuccess ).fail( onFail );
+      jQuery.ajax( request ).done( onDone ).fail( onFail );
    }
 
    update( id, attributes, onDone, onFail, onAlways )
    {
-      data = JSON.stringify({
-         todo: newState
+      let data = JSON.stringify({
+         todo: attributes
       });
 
       console.log( "put /todos/" + id + " " + data );
 
-      request = {
+      let request = {
          type: "PUT",
-         url: "https://afternoon-atoll-31464.herokuapp.com/todos/" +  id + ".json",
+         url: this.server + "/todos/" +  id + ".json",
          data: data,
          contentType: "application/json",
          dataType: "json"
@@ -80,7 +88,7 @@ class TodosRemote
 
    index( onDone )
    {
-      jQuery.getJSON( "https://afternoon-atoll-31464.herokuapp.com/todos", onDone );
+      jQuery.getJSON( this.server + "/todos", onDone );
    }
 }
 
@@ -90,10 +98,20 @@ class Model {
    constructor( opts )
    {
       this.todos = opts.local ? new TodosLocal : new TodosRemote;
+      // Add models later for projects, workers, etc.
    }
 }
 
 
 var model = new Model( { local: true } );
+
+
+function test()
+{
+   // What can I do here?
+   // model.todos.create( { ... } );
+   // model.todos.update( { ... } );
+}
+
 
 export default model;

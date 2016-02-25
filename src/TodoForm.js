@@ -18,7 +18,9 @@ class TodoForm extends React.Component {
          completed: false
       };
 
-      function onDone(data) {
+      function onDone( data ) {
+         console.log( "Create Todo done: " + JSON.stringify( data ) );
+
          component.props.onChange();
          component.refs.newTodoInput.value = "";
       }
