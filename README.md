@@ -1,4 +1,6 @@
-# React Starter
+# Example for students - Factoring Ajax calls out of React code.
+
+Creating simple local and remote models.
 
 ## Installation
 
