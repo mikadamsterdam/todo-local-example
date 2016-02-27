@@ -1,5 +1,5 @@
 import React from 'react';
-import TodoList from './Todolist';
+import TodoList from './TodoList';
 //import './stylesheets/_bootstrap.scss';
 
 class App extends React.Component {
